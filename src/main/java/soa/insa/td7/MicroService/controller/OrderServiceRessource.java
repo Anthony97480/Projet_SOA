@@ -1,7 +1,5 @@
 package soa.insa.td7.MicroService.controller;
 
-import soa.insa.td7.MicroService.model.*;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,37 +8,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import soa.insa.td7.MicroService.model.Client;
+import soa.insa.td7.MicroService.model.OrderService;
+import soa.insa.td7.MicroService.service.clientService;
+
 @RestController
 @RequestMapping("/Order")
 public class OrderServiceRessource {
-	OrderService os = new OrderService();
+	String db_URL = "jdbc:sqlite:e_commerce.db";
+	clientService clt_service = new clientService(db_URL);
+	//OrderService os = new OrderService();
 	
-	@RequestMapping("/client")
-	public class ClientRessource {
-		
-		@GetMapping("/{id}")
-		public Client infosClient(@PathVariable int id) {
-			Client client = new Client(id, "Rosa", "Parks");
-			return client;
-		}
-		
-		@PostMapping("/add")
-		public String addClient(@RequestParam String lastname, @RequestParam String firstname) {
-			Client client = new Client();
-			client.setLastName(lastname);
-			client.setFirstName(firstname);
-			
-			return os.AddClient(client);
-		}
-		
-		@PutMapping("/update")
-		public String updateClient(@RequestParam String Newlastname, @RequestParam String Newfirstname) {
-			return "Pas fait";
-		}
+	@GetMapping("client/{id}")
+	public Client infosClient(@PathVariable int id) {
+		Client client = clt_service.getClientByID(id);
+		return client;
 	}
 	
-	@RequestMapping("/commande")
-	public class CommandeRessource {
-		
+	@PostMapping("client/add")
+	public String addClient(@RequestParam String lastname, @RequestParam String firstname) {
+		Client client = new Client(lastname, firstname);
+		clt_service.AddClient(client);
+		return "Client: " + lastname + " " + firstname + " added !";
+	}
+	
+	@PutMapping("client/{id}/rename")
+	public String updateClient(@PathVariable int id, @RequestParam String lastname, @RequestParam String firstname) {
+		clt_service.RenameClient(id, lastname, firstname);
+		return "Client id:" + id + " renamed into: " + lastname + " " + firstname;
 	}
 }

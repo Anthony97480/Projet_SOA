@@ -10,6 +10,11 @@ public class Client {
 		this.firstname = firstname;
 		this.lastname = lastname;
 	}
+
+	public Client(String lastname, String firstname) {
+		this.firstname = firstname;
+		this.lastname = lastname;
+	}
 	
 	public Client() {}
 	
